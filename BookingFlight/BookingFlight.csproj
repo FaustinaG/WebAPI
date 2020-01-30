@@ -189,6 +189,7 @@
     <Compile Include="Controllers\FlightDetailController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\TicketDetailController.cs" />
+    <Compile Include="Controllers\UserLoginController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Flight.cs">
       <DependentUpon>BookingFlight.tt</DependentUpon>
@@ -201,6 +202,7 @@
     </Compile>
     <Compile Include="Models\FlightDetailViewModel.cs" />
     <Compile Include="Models\TicketDetailViewModel.cs" />
+    <Compile Include="Models\UserLoginViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TicketDetail.cs">
       <DependentUpon>BookingFlight.tt</DependentUpon>
@@ -209,6 +211,9 @@
       <DependentUpon>BookingFlight.tt</DependentUpon>
     </Compile>
     <Compile Include="UserTicketHistory.cs">
+      <DependentUpon>BookingFlight.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserType.cs">
       <DependentUpon>BookingFlight.tt</DependentUpon>
     </Compile>
   </ItemGroup>

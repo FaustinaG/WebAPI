@@ -10,7 +10,7 @@ namespace BookingFlight.Controllers
 {
     public class TicketDetailController : ApiController
     {
-        public IHttpActionResult PostTicketBooking(TicketDetailViewModel ticket)
+        public IHttpActionResult PostTicketBooking(TicketDetail ticket)
         {
             if (!ModelState.IsValid)
                 return BadRequest("Invalid data.");
@@ -25,6 +25,27 @@ namespace BookingFlight.Controllers
                     CancellationFare = ticket.CancellationFare,
                     FlightDetailId = ticket.FlightDetailId
                 }); 
+
+                ctx.SaveChanges();
+            }
+
+            return Ok();
+        }
+
+        public IHttpActionResult PutTicketCancellation(TicketDetail ticket)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest("Invalid data.");
+
+            using (var ctx = new BookingFlightEntities())
+            {
+                var ticketToBeCancelled = ctx.TicketDetails.Where(x=>x.Id == ticket.Id).FirstOrDefault<TicketDetail>();
+
+                if(ticketToBeCancelled != null)
+                {
+                    ticketToBeCancelled.BookingStatus = BookingStatusValues.Cancelled;
+                    ticketToBeCancelled.CancellationFare = ticket.CancellationFare; // TO DO
+                }
 
                 ctx.SaveChanges();
             }

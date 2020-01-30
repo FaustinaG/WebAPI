@@ -14,6 +14,7 @@ namespace BookingFlight.Models
         public decimal TotalFare { get; set; }
         public decimal CancellationFare { get; set; }
         public int FlightDetailId { get; set; }
+        public int UserLoginId { get; set; }
 
         [ForeignKey("FlightDetailId")]
         public FlightDetailViewModel FlightDetail { get; set; }

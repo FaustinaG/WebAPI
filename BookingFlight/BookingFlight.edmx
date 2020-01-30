@@ -174,7 +174,7 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UserName" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Password" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="TypeOfUser" Type="Int32" Nullable="false" />
+          <Property Name="TypeOfUser" Type="BookingFlightModel.UserType" Nullable="false" />
           <NavigationProperty Name="UserTicketHistories" Relationship="Self.FK_UserLogin" FromRole="UserLogin" ToRole="UserTicketHistory" />
         </EntityType>
         <EntityType Name="UserTicketHistory">
@@ -261,6 +261,10 @@
         <EnumType Name="BookingStatusValues">
           <Member Name="Confirmed" Value="0" />
           <Member Name="Cancelled" Value="1" />
+        </EnumType>
+        <EnumType Name="UserType">
+          <Member Name="Admin" Value="0" />
+          <Member Name="User" Value="1" />
         </EnumType>
       </Schema>
     </edmx:ConceptualModels>
