@@ -1,0 +1,348 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="BookingFlightModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Flight">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FlightName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="TotalSeats" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="FlightDetail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FromCity" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="ToCity" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="Departure" Type="datetime" Nullable="false" />
+          <Property Name="Arrival" Type="datetime" Nullable="false" />
+          <Property Name="Price" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="SeatAvailability" Type="int" Nullable="false" />
+          <Property Name="FlightId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TicketDetail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="BookingStatus" Type="int" Nullable="false" />
+          <Property Name="PassengerCount" Type="int" Nullable="false" />
+          <Property Name="TotalFare" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="CancellationFare" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="FlightDetailId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UserLogin">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserName" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="Password" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="TypeOfUser" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UserTicketHistory">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserLoginId" Type="int" Nullable="false" />
+          <Property Name="TicketDetailId" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Flight">
+          <End Role="Flight" Type="Self.Flight" Multiplicity="1" />
+          <End Role="FlightDetail" Type="Self.FlightDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Flight">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FlightDetail">
+              <PropertyRef Name="FlightId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FlightDetail">
+          <End Role="FlightDetail" Type="Self.FlightDetail" Multiplicity="1" />
+          <End Role="TicketDetail" Type="Self.TicketDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FlightDetail">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TicketDetail">
+              <PropertyRef Name="FlightDetailId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TicketDetail">
+          <End Role="TicketDetail" Type="Self.TicketDetail" Multiplicity="1" />
+          <End Role="UserTicketHistory" Type="Self.UserTicketHistory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TicketDetail">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserTicketHistory">
+              <PropertyRef Name="TicketDetailId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserLogin">
+          <End Role="UserLogin" Type="Self.UserLogin" Multiplicity="1" />
+          <End Role="UserTicketHistory" Type="Self.UserTicketHistory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserLogin">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserTicketHistory">
+              <PropertyRef Name="UserLoginId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="BookingFlightModelStoreContainer">
+          <EntitySet Name="Flight" EntityType="Self.Flight" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FlightDetail" EntityType="Self.FlightDetail" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TicketDetail" EntityType="Self.TicketDetail" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserLogin" EntityType="Self.UserLogin" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserTicketHistory" EntityType="Self.UserTicketHistory" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Flight" Association="Self.FK_Flight">
+            <End Role="Flight" EntitySet="Flight" />
+            <End Role="FlightDetail" EntitySet="FlightDetail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FlightDetail" Association="Self.FK_FlightDetail">
+            <End Role="FlightDetail" EntitySet="FlightDetail" />
+            <End Role="TicketDetail" EntitySet="TicketDetail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TicketDetail" Association="Self.FK_TicketDetail">
+            <End Role="TicketDetail" EntitySet="TicketDetail" />
+            <End Role="UserTicketHistory" EntitySet="UserTicketHistory" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserLogin" Association="Self.FK_UserLogin">
+            <End Role="UserLogin" EntitySet="UserLogin" />
+            <End Role="UserTicketHistory" EntitySet="UserTicketHistory" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="BookingFlightModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Flight">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FlightName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="TotalSeats" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="FlightDetails" Relationship="Self.FK_Flight" FromRole="Flight" ToRole="FlightDetail" />
+        </EntityType>
+        <EntityType Name="FlightDetail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FromCity" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ToCity" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Departure" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Arrival" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Price" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="SeatAvailability" Type="Int32" Nullable="false" />
+          <Property Name="FlightId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Flight" Relationship="Self.FK_Flight" FromRole="FlightDetail" ToRole="Flight" />
+          <NavigationProperty Name="TicketDetails" Relationship="Self.FK_FlightDetail" FromRole="FlightDetail" ToRole="TicketDetail" />
+        </EntityType>
+        <EntityType Name="TicketDetail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BookingStatus" Type="BookingFlightModel.BookingStatusValues" Nullable="false" />
+          <Property Name="PassengerCount" Type="Int32" Nullable="false" />
+          <Property Name="TotalFare" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="CancellationFare" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="FlightDetailId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="FlightDetail" Relationship="Self.FK_FlightDetail" FromRole="TicketDetail" ToRole="FlightDetail" />
+          <NavigationProperty Name="UserTicketHistories" Relationship="Self.FK_TicketDetail" FromRole="TicketDetail" ToRole="UserTicketHistory" />
+        </EntityType>
+        <EntityType Name="UserLogin">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserName" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="TypeOfUser" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="UserTicketHistories" Relationship="Self.FK_UserLogin" FromRole="UserLogin" ToRole="UserTicketHistory" />
+        </EntityType>
+        <EntityType Name="UserTicketHistory">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserLoginId" Type="Int32" Nullable="false" />
+          <Property Name="TicketDetailId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="TicketDetail" Relationship="Self.FK_TicketDetail" FromRole="UserTicketHistory" ToRole="TicketDetail" />
+          <NavigationProperty Name="UserLogin" Relationship="Self.FK_UserLogin" FromRole="UserTicketHistory" ToRole="UserLogin" />
+        </EntityType>
+        <Association Name="FK_Flight">
+          <End Role="Flight" Type="Self.Flight" Multiplicity="1" />
+          <End Role="FlightDetail" Type="Self.FlightDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Flight">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FlightDetail">
+              <PropertyRef Name="FlightId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FlightDetail">
+          <End Role="FlightDetail" Type="Self.FlightDetail" Multiplicity="1" />
+          <End Role="TicketDetail" Type="Self.TicketDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FlightDetail">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TicketDetail">
+              <PropertyRef Name="FlightDetailId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TicketDetail">
+          <End Role="TicketDetail" Type="Self.TicketDetail" Multiplicity="1" />
+          <End Role="UserTicketHistory" Type="Self.UserTicketHistory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TicketDetail">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserTicketHistory">
+              <PropertyRef Name="TicketDetailId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserLogin">
+          <End Role="UserLogin" Type="Self.UserLogin" Multiplicity="1" />
+          <End Role="UserTicketHistory" Type="Self.UserTicketHistory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserLogin">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserTicketHistory">
+              <PropertyRef Name="UserLoginId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="BookingFlightEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Flights" EntityType="Self.Flight" />
+          <EntitySet Name="FlightDetails" EntityType="Self.FlightDetail" />
+          <EntitySet Name="TicketDetails" EntityType="Self.TicketDetail" />
+          <EntitySet Name="UserLogins" EntityType="Self.UserLogin" />
+          <EntitySet Name="UserTicketHistories" EntityType="Self.UserTicketHistory" />
+          <AssociationSet Name="FK_Flight" Association="Self.FK_Flight">
+            <End Role="Flight" EntitySet="Flights" />
+            <End Role="FlightDetail" EntitySet="FlightDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FlightDetail" Association="Self.FK_FlightDetail">
+            <End Role="FlightDetail" EntitySet="FlightDetails" />
+            <End Role="TicketDetail" EntitySet="TicketDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TicketDetail" Association="Self.FK_TicketDetail">
+            <End Role="TicketDetail" EntitySet="TicketDetails" />
+            <End Role="UserTicketHistory" EntitySet="UserTicketHistories" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserLogin" Association="Self.FK_UserLogin">
+            <End Role="UserLogin" EntitySet="UserLogins" />
+            <End Role="UserTicketHistory" EntitySet="UserTicketHistories" />
+          </AssociationSet>
+        </EntityContainer>
+        <EnumType Name="BookingStatusValues">
+          <Member Name="Confirmed" Value="0" />
+          <Member Name="Cancelled" Value="1" />
+        </EnumType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="BookingFlightModelStoreContainer" CdmEntityContainer="BookingFlightEntities">
+          <EntitySetMapping Name="Flights">
+            <EntityTypeMapping TypeName="BookingFlightModel.Flight">
+              <MappingFragment StoreEntitySet="Flight">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="FlightName" ColumnName="FlightName" />
+                <ScalarProperty Name="TotalSeats" ColumnName="TotalSeats" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FlightDetails">
+            <EntityTypeMapping TypeName="BookingFlightModel.FlightDetail">
+              <MappingFragment StoreEntitySet="FlightDetail">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="FromCity" ColumnName="FromCity" />
+                <ScalarProperty Name="ToCity" ColumnName="ToCity" />
+                <ScalarProperty Name="Departure" ColumnName="Departure" />
+                <ScalarProperty Name="Arrival" ColumnName="Arrival" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="SeatAvailability" ColumnName="SeatAvailability" />
+                <ScalarProperty Name="FlightId" ColumnName="FlightId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TicketDetails">
+            <EntityTypeMapping TypeName="BookingFlightModel.TicketDetail">
+              <MappingFragment StoreEntitySet="TicketDetail">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="BookingStatus" ColumnName="BookingStatus" />
+                <ScalarProperty Name="PassengerCount" ColumnName="PassengerCount" />
+                <ScalarProperty Name="TotalFare" ColumnName="TotalFare" />
+                <ScalarProperty Name="CancellationFare" ColumnName="CancellationFare" />
+                <ScalarProperty Name="FlightDetailId" ColumnName="FlightDetailId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserLogins">
+            <EntityTypeMapping TypeName="BookingFlightModel.UserLogin">
+              <MappingFragment StoreEntitySet="UserLogin">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="TypeOfUser" ColumnName="TypeOfUser" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserTicketHistories">
+            <EntityTypeMapping TypeName="BookingFlightModel.UserTicketHistory">
+              <MappingFragment StoreEntitySet="UserTicketHistory">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="UserLoginId" ColumnName="UserLoginId" />
+                <ScalarProperty Name="TicketDetailId" ColumnName="TicketDetailId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
