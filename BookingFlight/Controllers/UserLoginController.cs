@@ -32,24 +32,18 @@ namespace BookingFlight.Controllers
         }
 
         [Route("api/UserLogin/GetUser/{UserName}/{Password}")]
-        public IHttpActionResult GetUser(string UserName, string Password)
+        public int GetUser(string UserName, string Password)
         {
-            IList<UserLoginViewModel> users = null;
+            int userid;
 
             using (var ctx = new BookingFlightEntities())
             {
-                users = (from user in ctx.UserLogins
-                         where user.UserName == UserName && user.Password == Password
-                         select new UserLoginViewModel
-                         {
-                               Id = user.Id,
-                               UserName = user.UserName,
-                               Password = user.Password,
-                               TypeOfUser = user.TypeOfUser
-                         }).ToList<UserLoginViewModel>();
+                userid = (from user in ctx.UserLogins
+                          where user.UserName == UserName && user.Password == Password
+                          select user.Id).FirstOrDefault();
             }
 
-            return Ok(users);
+            return userid;
         }
     }
 }

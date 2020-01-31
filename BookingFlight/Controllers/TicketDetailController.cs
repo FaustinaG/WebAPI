@@ -14,37 +14,76 @@ namespace BookingFlight.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest("Invalid data.");
-
             using (var ctx = new BookingFlightEntities())
             {
-                ctx.TicketDetails.Add(new TicketDetail()
+                var tickets = new TicketDetail()
                 {
                     BookingStatus = ticket.BookingStatus,
                     PassengerCount = ticket.PassengerCount,
                     TotalFare = ticket.TotalFare,
                     CancellationFare = ticket.CancellationFare,
                     FlightDetailId = ticket.FlightDetailId
-                }); 
+                };
+                ctx.TicketDetails.Add(tickets); 
 
                 ctx.SaveChanges();
+                return Json(new { id = tickets.Id });
             }
 
-            return Ok();
         }
 
-        public IHttpActionResult PutTicketCancellation(TicketDetail ticket)
+        [Route("api/TicketDetail/GetTicketDetail/{userId}")]
+        public IHttpActionResult GetTicketDetail(int userId)
+        {
+            IList<TicketDetailViewModel> tickets = null;
+
+            using (var ctx = new BookingFlightEntities())
+            {
+                tickets = (from flight in ctx.Flights
+                           join flightDetail in ctx.FlightDetails
+                           on flight.Id equals flightDetail.FlightId
+                           join ticket in ctx.TicketDetails
+                           on flightDetail.Id equals ticket.FlightDetailId
+                           join history in ctx.UserTicketHistories
+                           on ticket.Id equals history.TicketDetailId
+                           where userId == history.UserLoginId
+                           && ticket.BookingStatus == BookingStatusValues.Confirmed
+                           && flightDetail.Departure >= DateTime.Now
+                           select new TicketDetailViewModel
+                           {
+                               Id = ticket.Id,
+                               FlightName = flight.FlightName,
+                               JourneyDate = flightDetail.Departure,
+                               FromCity = flightDetail.FromCity,
+                               ToCity = flightDetail.ToCity,
+                               Price = flightDetail.Price,
+                               PassengerCount = ticket.PassengerCount,
+                               TotalFare = ticket.TotalFare,
+                               BookingStatus = ticket.BookingStatus
+                           }).ToList<TicketDetailViewModel>();
+            }
+
+            if (!tickets.Any())
+            {
+                return NotFound();
+            }
+
+            return Ok(tickets);
+        }
+
+        [Route("api/TicketDetail/PutTicketCancellation/{ticketId}")]
+        public IHttpActionResult PutTicketCancellation(int ticketId)
         {
             if (!ModelState.IsValid)
                 return BadRequest("Invalid data.");
 
             using (var ctx = new BookingFlightEntities())
             {
-                var ticketToBeCancelled = ctx.TicketDetails.Where(x=>x.Id == ticket.Id).FirstOrDefault<TicketDetail>();
+                var ticketToBeCancelled = ctx.TicketDetails.Where(x=>x.Id == ticketId).FirstOrDefault<TicketDetail>();
 
                 if(ticketToBeCancelled != null)
                 {
                     ticketToBeCancelled.BookingStatus = BookingStatusValues.Cancelled;
-                    ticketToBeCancelled.CancellationFare = ticket.CancellationFare; // TO DO
                 }
 
                 ctx.SaveChanges();

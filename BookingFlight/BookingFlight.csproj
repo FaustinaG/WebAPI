@@ -190,6 +190,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\TicketDetailController.cs" />
     <Compile Include="Controllers\UserLoginController.cs" />
+    <Compile Include="Controllers\UserTicketHistoryController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Flight.cs">
       <DependentUpon>BookingFlight.tt</DependentUpon>
