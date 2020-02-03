@@ -51,7 +51,6 @@ namespace BookingFlight.Controllers
                            && flightDetail.Departure >= DateTime.Now
                            select new TicketDetailViewModel
                            {
-                               Id = ticket.Id,
                                FlightName = flight.FlightName,
                                JourneyDate = flightDetail.Departure,
                                FromCity = flightDetail.FromCity,
@@ -59,7 +58,8 @@ namespace BookingFlight.Controllers
                                Price = flightDetail.Price,
                                PassengerCount = ticket.PassengerCount,
                                TotalFare = ticket.TotalFare,
-                               BookingStatus = ticket.BookingStatus
+                               BookingStatus = "Confirmed",
+                               Id = ticket.Id
                            }).ToList<TicketDetailViewModel>();
             }
 

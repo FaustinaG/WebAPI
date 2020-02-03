@@ -9,9 +9,7 @@ namespace BookingFlight.Models
 {
     public class TicketDetailViewModel
     {
-        public int Id { get; set; }
         public string FlightName { get; set; }
-        public BookingStatusValues BookingStatus { get; set; }
         public int PassengerCount { get; set; }
         public decimal TotalFare { get; set; }
         //public decimal CancellationFare { get; set; }
@@ -19,8 +17,10 @@ namespace BookingFlight.Models
         [JsonConverter(typeof(OnlyDateConverter))]
         public DateTime JourneyDate { get; set; }
         public string FromCity { get; set; }
+        public string BookingStatus { get; set; }
         public string ToCity { get; set; }
         public decimal Price { get; set; }
+        public int Id { get; set; }
 
         [ForeignKey("FlightDetailId")]
         public FlightDetailViewModel FlightDetail { get; set; }
