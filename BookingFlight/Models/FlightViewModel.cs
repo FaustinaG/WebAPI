@@ -6,7 +6,7 @@ using System.Web;
 namespace BookingFlight.Models
 {
     public class FlightViewModel
-    {
+    { 
         public string FlightName { get; set; }
         public int TotalSeats { get; set; }
         public int Id { get; set; }
