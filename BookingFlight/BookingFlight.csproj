@@ -186,6 +186,7 @@
     <Compile Include="BookingStatusValues.cs">
       <DependentUpon>BookingFlight.tt</DependentUpon>
     </Compile>
+    <Compile Include="Controllers\FlightController.cs" />
     <Compile Include="Controllers\FlightDetailController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\TicketDetailController.cs" />
@@ -202,6 +203,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\FlightDetailViewModel.cs" />
+    <Compile Include="Models\FlightViewModel.cs" />
     <Compile Include="Models\TicketDetailViewModel.cs" />
     <Compile Include="Models\UserLoginViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
