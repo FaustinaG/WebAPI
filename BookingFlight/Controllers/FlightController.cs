@@ -12,19 +12,26 @@ namespace BookingFlight.Controllers
     {
         public IHttpActionResult PostFlight(Flight flight)
         {
-            if (!ModelState.IsValid)
-                return BadRequest("Invalid data.");
-            using (var ctx = new BookingFlightEntities())
+            try
             {
-                var flights = new Flight()
+                if (!ModelState.IsValid)
+                    return BadRequest("Invalid data.");
+                using (var ctx = new BookingFlightEntities())
                 {
-                    FlightName = flight.FlightName,
-                    TotalSeats = flight.TotalSeats
-                };
-                ctx.Flights.Add(flights);
+                    var flights = new Flight()
+                    {
+                        FlightName = flight.FlightName,
+                        TotalSeats = flight.TotalSeats
+                    };
+                    ctx.Flights.Add(flights);
 
-                ctx.SaveChanges();
-                return Json(new { id = flights.Id });
+                    ctx.SaveChanges();
+                    return Json(new { id = flights.Id });
+                }
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
 
@@ -54,8 +61,6 @@ namespace BookingFlight.Controllers
             using (var ctx = new BookingFlightEntities())
             {
                 flights = (from flight in ctx.Flights
-                           join flightDetail in ctx.FlightDetails
-                           on flight.Id equals flightDetail.FlightId
                            select new FlightViewModel
                            {    
                                FlightName = flight.FlightName,
@@ -63,7 +68,7 @@ namespace BookingFlight.Controllers
                                Id = flight.Id,
                                FlightId = flight.Id,
                                FlightIdTobeCanceled = flight.Id
-                           }).ToList<FlightViewModel>();
+                           }).Distinct().ToList<FlightViewModel>();
             }
 
             if (!flights.Any())
@@ -72,6 +77,30 @@ namespace BookingFlight.Controllers
             }
 
             return Ok(flights);
+        }
+
+        public IHttpActionResult DeleteFlight(int id)
+        {
+            try {
+                if (id <= 0)
+                    return BadRequest("Not a valid flight id");
+
+                using (var ctx = new BookingFlightEntities())
+                {
+                    var flight = ctx.Flights
+                        .Where(s => s.Id == id)
+                        .FirstOrDefault();
+
+                    ctx.Entry(flight).State = System.Data.Entity.EntityState.Deleted;
+                    ctx.SaveChanges();
+                }
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

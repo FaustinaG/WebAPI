@@ -22,6 +22,7 @@ namespace BookingFlight.Models
         public decimal Price { get; set; }
         public int SeatAvailability { get; set; }
         public int Id { get; set; }
+        public int FlightId { get; set; }
     }
 
     public class OnlyDateConverter : IsoDateTimeConverter
