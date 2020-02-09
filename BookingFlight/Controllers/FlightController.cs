@@ -79,6 +79,32 @@ namespace BookingFlight.Controllers
             return Ok(flights);
         }
 
+        public IHttpActionResult GetFlightsById( int Id)
+        {
+            IList<FlightViewModel> flights = null;
+
+            using (var ctx = new BookingFlightEntities())
+            {
+                flights = (from flight in ctx.Flights
+                           where flight.Id == Id
+                           select new FlightViewModel
+                           {
+                               FlightName = flight.FlightName,
+                               TotalSeats = flight.TotalSeats,
+                               Id = flight.Id,
+                               FlightId = flight.Id,
+                               FlightIdTobeCanceled = flight.Id
+                           }).Distinct().ToList<FlightViewModel>();
+            }
+
+            if (!flights.Any())
+            {
+                return NotFound();
+            }
+
+            return Ok(flights);
+        }
+
         public IHttpActionResult DeleteFlight(int id)
         {
             try {
