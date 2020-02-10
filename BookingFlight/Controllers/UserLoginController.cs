@@ -13,42 +13,56 @@ namespace BookingFlight.Controllers
     {
         public IHttpActionResult PostUser(UserLogin user)
         {
-            if (!ModelState.IsValid)
-                return BadRequest("Invalid data.");
-
-            using (var ctx = new BookingFlightEntities())
+            try
             {
-                ctx.UserLogins.Add(new UserLogin()
+                if (!ModelState.IsValid)
+                    return BadRequest("Invalid data.");
+
+                using (var ctx = new BookingFlightEntities())
                 {
-                    UserName = user.UserName,
-                    Password = user.Password,
-                    TypeOfUser = user.TypeOfUser
-                });
+                    ctx.UserLogins.Add(new UserLogin()
+                    {
+                        UserName = user.UserName,
+                        Password = user.Password,
+                        TypeOfUser = user.TypeOfUser
+                    });
 
-                ctx.SaveChanges();
+                    ctx.SaveChanges();
+                }
+
+                return Ok();
             }
-
-            return Ok();
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         [Route("api/UserLogin/GetUser/{UserName}/{Password}")]
         public IHttpActionResult GetUser(string UserName, string Password)
         {
-            UserLogin userlogin = null;
+            try
+            {
+                UserLogin userlogin = null;
 
-            using (var ctx = new BookingFlightEntities())
-            {
-                 userlogin = (from user in ctx.UserLogins
-                          where user.UserName == UserName && user.Password == Password
-                          select user).FirstOrDefault() ;
+                using (var ctx = new BookingFlightEntities())
+                {
+                    userlogin = (from user in ctx.UserLogins
+                                 where user.UserName == UserName && user.Password == Password
+                                 select user).FirstOrDefault();
+                }
+                if (userlogin != null)
+                {
+                    return Json(new { id = userlogin.Id, UserType = userlogin.TypeOfUser });
+                }
+                else
+                {
+                    return Json(new { });
+                }
             }
-            if (userlogin != null)
+            catch (Exception ex)
             {
-                return Json(new { id = userlogin.Id, UserType = userlogin.TypeOfUser });
-            }
-            else
-            {
-                return Json(new { });
+                throw new Exception(ex.Message);
             }
         }
     }

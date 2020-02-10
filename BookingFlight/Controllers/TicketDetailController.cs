@@ -12,22 +12,29 @@ namespace BookingFlight.Controllers
     {
         public IHttpActionResult PostTicketBooking(TicketDetail ticket)
         {
-            if (!ModelState.IsValid)
-                return BadRequest("Invalid data.");
-            using (var ctx = new BookingFlightEntities())
+            try
             {
-                var tickets = new TicketDetail()
+                if (!ModelState.IsValid)
+                    return BadRequest("Invalid data.");
+                using (var ctx = new BookingFlightEntities())
                 {
-                    BookingStatus = ticket.BookingStatus,
-                    PassengerCount = ticket.PassengerCount,
-                    TotalFare = ticket.TotalFare,
-                    CancellationFare = ticket.CancellationFare,
-                    FlightDetailId = ticket.FlightDetailId
-                };
-                ctx.TicketDetails.Add(tickets); 
+                    var tickets = new TicketDetail()
+                    {
+                        BookingStatus = ticket.BookingStatus,
+                        PassengerCount = ticket.PassengerCount,
+                        TotalFare = ticket.TotalFare,
+                        CancellationFare = ticket.CancellationFare,
+                        FlightDetailId = ticket.FlightDetailId
+                    };
+                    ctx.TicketDetails.Add(tickets);
 
-                ctx.SaveChanges();
-                return Json(new { id = tickets.Id });
+                    ctx.SaveChanges();
+                    return Json(new { id = tickets.Id });
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
 
         }
@@ -35,137 +42,166 @@ namespace BookingFlight.Controllers
         [Route("api/TicketDetail/GetTicketDetail/{userId}")]
         public IHttpActionResult GetTicketDetail(int userId)
         {
-            IList<TicketDetailViewModel> tickets = null;
-
-            using (var ctx = new BookingFlightEntities())
+            try
             {
-                tickets = (from flight in ctx.Flights
-                           join flightDetail in ctx.FlightDetails
-                           on flight.Id equals flightDetail.FlightId
-                           join ticket in ctx.TicketDetails
-                           on flightDetail.Id equals ticket.FlightDetailId
-                           join history in ctx.UserTicketHistories
-                           on ticket.Id equals history.TicketDetailId
-                           where userId == history.UserLoginId
-                           && ticket.BookingStatus == BookingStatusValues.Confirmed
-                           && flightDetail.Departure >= DateTime.Now
-                           select new TicketDetailViewModel
-                           {
-                               FlightName = flight.FlightName,
-                               JourneyDate = flightDetail.Departure,
-                               FromCity = flightDetail.FromCity,
-                               ToCity = flightDetail.ToCity,
-                               Price = flightDetail.Price,
-                               PassengerCount = ticket.PassengerCount,
-                               TotalFare = ticket.TotalFare,
-                               BookingStatus = "Confirmed",
-                               Id = ticket.Id
-                           }).ToList<TicketDetailViewModel>();
-            }
+                IList<TicketDetailViewModel> tickets = null;
 
-            if (!tickets.Any())
+                using (var ctx = new BookingFlightEntities())
+                {
+                    tickets = (from flight in ctx.Flights
+                               join flightDetail in ctx.FlightDetails
+                               on flight.Id equals flightDetail.FlightId
+                               join ticket in ctx.TicketDetails
+                               on flightDetail.Id equals ticket.FlightDetailId
+                               join history in ctx.UserTicketHistories
+                               on ticket.Id equals history.TicketDetailId
+                               where userId == history.UserLoginId
+                               && ticket.BookingStatus == BookingStatusValues.Confirmed
+                               && flightDetail.Departure >= DateTime.Now
+                               select new TicketDetailViewModel
+                               {
+                                   FlightName = flight.FlightName,
+                                   JourneyDate = flightDetail.Departure,
+                                   FromCity = flightDetail.FromCity,
+                                   ToCity = flightDetail.ToCity,
+                                   Price = flightDetail.Price,
+                                   PassengerCount = ticket.PassengerCount,
+                                   TotalFare = ticket.TotalFare,
+                                   BookingStatus = "Confirmed",
+                                   Id = ticket.Id
+                               }).ToList<TicketDetailViewModel>();
+                }
+
+                if (!tickets.Any())
+                {
+                    return NotFound();
+                }
+
+                return Ok(tickets);
+            }
+            catch (Exception ex)
             {
-                return NotFound();
+                throw new Exception(ex.Message);
             }
-
-            return Ok(tickets);
         }
 
         [Route("api/TicketDetail/GetTicketDetailHistory/{userId}")]
         public IHttpActionResult GetTicketDetailHistory(int userId)
         {
-            IList<TicketDetailViewModel> tickets = null;
-
-            using (var ctx = new BookingFlightEntities())
+            try
             {
-                tickets = (from flight in ctx.Flights
-                           join flightDetail in ctx.FlightDetails
-                           on flight.Id equals flightDetail.FlightId
-                           join ticket in ctx.TicketDetails
-                           on flightDetail.Id equals ticket.FlightDetailId
-                           join history in ctx.UserTicketHistories
-                           on ticket.Id equals history.TicketDetailId
-                           where userId == history.UserLoginId
-                           select new TicketDetailViewModel
-                           {
-                               FlightName = flight.FlightName,
-                               JourneyDate = flightDetail.Departure,
-                               FromCity = flightDetail.FromCity,
-                               ToCity = flightDetail.ToCity,
-                               Price = flightDetail.Price,
-                               PassengerCount = ticket.PassengerCount,
-                               TotalFare = ticket.TotalFare,
-                               BookingStatus = ticket.BookingStatus.ToString(),
-                               Id = ticket.Id
-                           }).ToList<TicketDetailViewModel>();
-            }
+                IList<TicketDetailViewModel> tickets = null;
 
-            if (!tickets.Any())
+                using (var ctx = new BookingFlightEntities())
+                {
+                    tickets = (from flight in ctx.Flights
+                               join flightDetail in ctx.FlightDetails
+                               on flight.Id equals flightDetail.FlightId
+                               join ticket in ctx.TicketDetails
+                               on flightDetail.Id equals ticket.FlightDetailId
+                               join history in ctx.UserTicketHistories
+                               on ticket.Id equals history.TicketDetailId
+                               where userId == history.UserLoginId
+                               select new TicketDetailViewModel
+                               {
+                                   FlightName = flight.FlightName,
+                                   JourneyDate = flightDetail.Departure,
+                                   FromCity = flightDetail.FromCity,
+                                   ToCity = flightDetail.ToCity,
+                                   Price = flightDetail.Price,
+                                   PassengerCount = ticket.PassengerCount,
+                                   TotalFare = ticket.TotalFare,
+                                   BookingStatus = ticket.BookingStatus.ToString(),
+                                   Id = ticket.Id
+                               }).ToList<TicketDetailViewModel>();
+                }
+
+                if (!tickets.Any())
+                {
+                    return NotFound();
+                }
+
+                return Ok(tickets);
+            }
+            catch (Exception ex)
             {
-                return NotFound();
+                throw new Exception(ex.Message);
             }
-
-            return Ok(tickets);
         }
 
         [Route("api/TicketDetail/GetTicketDetailByTicketId/{ticketid}")]
         public IHttpActionResult GetTicketDetailByTicketId(int ticketid)
         {
-            IList<TicketDetailViewModel> tickets = null;
-
-            using (var ctx = new BookingFlightEntities())
+            try
             {
-                tickets = (from flight in ctx.Flights
-                           join flightDetail in ctx.FlightDetails
-                           on flight.Id equals flightDetail.FlightId
-                           join ticket in ctx.TicketDetails
-                           on flightDetail.Id equals ticket.FlightDetailId
-                           join history in ctx.UserTicketHistories
-                           on ticket.Id equals history.TicketDetailId
-                           where ticketid == ticket.Id
-                           && ticket.BookingStatus == BookingStatusValues.Confirmed
-                           && flightDetail.Departure >= DateTime.Now
-                           select new TicketDetailViewModel
-                           {
-                               FlightName = flight.FlightName,
-                               JourneyDate = flightDetail.Departure,
-                               FromCity = flightDetail.FromCity,
-                               ToCity = flightDetail.ToCity,
-                               Price = flightDetail.Price,
-                               PassengerCount = ticket.PassengerCount,
-                               TotalFare = ticket.TotalFare,
-                               BookingStatus = "Confirmed",
-                               Id = ticket.Id
-                           }).ToList<TicketDetailViewModel>();
-            }
+                IList<TicketDetailViewModel> tickets = null;
 
-            if (!tickets.Any())
+                using (var ctx = new BookingFlightEntities())
+                {
+                    tickets = (from flight in ctx.Flights
+                               join flightDetail in ctx.FlightDetails
+                               on flight.Id equals flightDetail.FlightId
+                               join ticket in ctx.TicketDetails
+                               on flightDetail.Id equals ticket.FlightDetailId
+                               join history in ctx.UserTicketHistories
+                               on ticket.Id equals history.TicketDetailId
+                               where ticketid == ticket.Id
+                               && ticket.BookingStatus == BookingStatusValues.Confirmed
+                               && flightDetail.Departure >= DateTime.Now
+                               select new TicketDetailViewModel
+                               {
+                                   FlightName = flight.FlightName,
+                                   JourneyDate = flightDetail.Departure,
+                                   FromCity = flightDetail.FromCity,
+                                   ToCity = flightDetail.ToCity,
+                                   Price = flightDetail.Price,
+                                   PassengerCount = ticket.PassengerCount,
+                                   TotalFare = ticket.TotalFare,
+                                   BookingStatus = "Confirmed",
+                                   Id = ticket.Id
+                               }).ToList<TicketDetailViewModel>();
+                }
+
+                if (!tickets.Any())
+                {
+                    return NotFound();
+                }
+
+                return Ok(tickets);
+            }
+            catch (Exception ex)
             {
-                return NotFound();
+                throw new Exception(ex.Message);
             }
-
-            return Ok(tickets);
         }
 
         [Route("api/TicketDetail/PutTicketCancellation/{ticketId}")]
         public IHttpActionResult PutTicketCancellation(int ticketId)
         {
-            if (!ModelState.IsValid)
-                return BadRequest("Invalid data.");
-
-            using (var ctx = new BookingFlightEntities())
+            try
             {
-                var ticketToBeCancelled = ctx.TicketDetails.Where(x=>x.Id == ticketId).FirstOrDefault<TicketDetail>();
+                if (!ModelState.IsValid)
+                    return BadRequest("Invalid data.");
 
-                if(ticketToBeCancelled != null)
+                using (var ctx = new BookingFlightEntities())
                 {
-                    ticketToBeCancelled.BookingStatus = BookingStatusValues.Cancelled;
+                    var ticketToBeCancelled = ctx.TicketDetails.Where(x => x.Id == ticketId).FirstOrDefault<TicketDetail>();
+
+                    if (ticketToBeCancelled != null)
+                    {
+                        ticketToBeCancelled.BookingStatus = BookingStatusValues.Cancelled;
+                    }
+
+                    ctx.SaveChanges();
                 }
 
-                ctx.SaveChanges();
+                return Ok();
             }
-
-            return Ok();
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
+
     }
 }

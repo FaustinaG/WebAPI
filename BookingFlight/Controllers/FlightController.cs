@@ -37,72 +37,93 @@ namespace BookingFlight.Controllers
 
         public IHttpActionResult PutFlight(Flight flight)
         {
-            if (!ModelState.IsValid)
-                return BadRequest("Invalid data.");
-            using (var ctx = new BookingFlightEntities())
+            try
             {
-                var flighttobeUpdated = ctx.Flights.Where(x => x.Id == flight.Id).FirstOrDefault<Flight>();
-                if(flighttobeUpdated != null)
+                if (!ModelState.IsValid)
+                    return BadRequest("Invalid data.");
+                using (var ctx = new BookingFlightEntities())
                 {
-                    flighttobeUpdated.FlightName = flight.FlightName;
-                    flighttobeUpdated.TotalSeats = flight.TotalSeats;
-                }
+                    var flighttobeUpdated = ctx.Flights.Where(x => x.Id == flight.Id).FirstOrDefault<Flight>();
+                    if (flighttobeUpdated != null)
+                    {
+                        flighttobeUpdated.FlightName = flight.FlightName;
+                        flighttobeUpdated.TotalSeats = flight.TotalSeats;
+                    }
 
-                ctx.SaveChanges();
-                
+                    ctx.SaveChanges();
+
+                }
+                return Ok();
             }
-            return Ok();
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public IHttpActionResult GetFlights()
         {
-            IList<FlightViewModel> flights = null;
-
-            using (var ctx = new BookingFlightEntities())
+            try
             {
-                flights = (from flight in ctx.Flights
-                           select new FlightViewModel
-                           {    
-                               FlightName = flight.FlightName,
-                               TotalSeats = flight.TotalSeats,
-                               Id = flight.Id,
-                               FlightId = flight.Id,
-                               FlightIdTobeCanceled = flight.Id
-                           }).Distinct().ToList<FlightViewModel>();
-            }
+                IList<FlightViewModel> flights = null;
 
-            if (!flights.Any())
+                using (var ctx = new BookingFlightEntities())
+                {
+                    flights = (from flight in ctx.Flights
+                               select new FlightViewModel
+                               {
+                                   FlightName = flight.FlightName,
+                                   TotalSeats = flight.TotalSeats,
+                                   Id = flight.Id,
+                                   FlightId = flight.Id,
+                                   FlightIdTobeCanceled = flight.Id
+                               }).Distinct().ToList<FlightViewModel>();
+                }
+
+                if (!flights.Any())
+                {
+                    return NotFound();
+                }
+
+                return Ok(flights);
+            }
+            catch (Exception ex)
             {
-                return NotFound();
+                throw new Exception(ex.Message);
             }
-
-            return Ok(flights);
         }
 
         public IHttpActionResult GetFlightsById( int Id)
         {
-            IList<FlightViewModel> flights = null;
-
-            using (var ctx = new BookingFlightEntities())
+            try
             {
-                flights = (from flight in ctx.Flights
-                           where flight.Id == Id
-                           select new FlightViewModel
-                           {
-                               FlightName = flight.FlightName,
-                               TotalSeats = flight.TotalSeats,
-                               Id = flight.Id,
-                               FlightId = flight.Id,
-                               FlightIdTobeCanceled = flight.Id
-                           }).Distinct().ToList<FlightViewModel>();
-            }
+                IList<FlightViewModel> flights = null;
 
-            if (!flights.Any())
+                using (var ctx = new BookingFlightEntities())
+                {
+                    flights = (from flight in ctx.Flights
+                               where flight.Id == Id
+                               select new FlightViewModel
+                               {
+                                   FlightName = flight.FlightName,
+                                   TotalSeats = flight.TotalSeats,
+                                   Id = flight.Id,
+                                   FlightId = flight.Id,
+                                   FlightIdTobeCanceled = flight.Id
+                               }).Distinct().ToList<FlightViewModel>();
+                }
+
+                if (!flights.Any())
+                {
+                    return NotFound();
+                }
+
+                return Ok(flights);
+            }
+            catch (Exception ex)
             {
-                return NotFound();
+                throw new Exception(ex.Message);
             }
-
-            return Ok(flights);
         }
 
         public IHttpActionResult DeleteFlight(int id)

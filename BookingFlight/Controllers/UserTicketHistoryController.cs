@@ -11,21 +11,28 @@ namespace BookingFlight.Controllers
     {
         public IHttpActionResult PostUserTicketHistory(UserTicketHistory history)
         {
-            if (!ModelState.IsValid)
-                return BadRequest("Invalid data.");
-
-            using (var ctx = new BookingFlightEntities())
+            try
             {
-                ctx.UserTicketHistories.Add(new UserTicketHistory()
+                if (!ModelState.IsValid)
+                    return BadRequest("Invalid data.");
+
+                using (var ctx = new BookingFlightEntities())
                 {
-                    UserLoginId = history.UserLoginId,
-                    TicketDetailId = history.TicketDetailId
-                });
+                    ctx.UserTicketHistories.Add(new UserTicketHistory()
+                    {
+                        UserLoginId = history.UserLoginId,
+                        TicketDetailId = history.TicketDetailId
+                    });
 
-                ctx.SaveChanges();
+                    ctx.SaveChanges();
+                }
+
+                return Ok();
             }
-
-            return Ok();
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }
