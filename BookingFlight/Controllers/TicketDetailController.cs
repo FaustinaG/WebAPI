@@ -29,6 +29,14 @@ namespace BookingFlight.Controllers
                     ctx.TicketDetails.Add(tickets);
 
                     ctx.SaveChanges();
+
+                    var flightdetail = ctx.FlightDetails.Where(x => x.Id == tickets.FlightDetailId).FirstOrDefault();
+                    if (flightdetail != null)
+                    {
+                        flightdetail.SeatAvailability -= tickets.PassengerCount;
+                    }
+
+                    ctx.SaveChanges();
                     return Json(new { id = tickets.Id });
                 }
             }
