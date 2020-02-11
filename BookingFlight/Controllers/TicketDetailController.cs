@@ -121,7 +121,7 @@ namespace BookingFlight.Controllers
                                    TotalFare = ticket.TotalFare,
                                    BookingStatus = ticket.BookingStatus.ToString(),
                                    Id = ticket.Id
-                               }).ToList<TicketDetailViewModel>();
+                               }).Distinct().ToList<TicketDetailViewModel>();
                 }
 
                 if (!tickets.Any())
