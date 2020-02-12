@@ -9,15 +9,20 @@ namespace BookingFlight.Models
 {
     public class TicketDetailViewModel
     {
+        [JsonProperty(PropertyName = "Flight Name")]
         public string FlightName { get; set; }
+        [JsonProperty(PropertyName = "Passenger Count")]
         public int PassengerCount { get; set; }
+        [JsonProperty(PropertyName = "Total Fare")]
         public decimal TotalFare { get; set; }
-        //public decimal CancellationFare { get; set; }
-        //public int FlightDetailId { get; set; }
+        [JsonProperty(PropertyName = "Journey Date")]
         [JsonConverter(typeof(OnlyDateConverter))]
         public DateTime JourneyDate { get; set; }
+        [JsonProperty(PropertyName = "From City")]
         public string FromCity { get; set; }
+        [JsonProperty(PropertyName = "Booking Status")]
         public string BookingStatus { get; set; }
+        [JsonProperty(PropertyName = "To City")]
         public string ToCity { get; set; }
         public decimal Price { get; set; }
         public int Id { get; set; }
