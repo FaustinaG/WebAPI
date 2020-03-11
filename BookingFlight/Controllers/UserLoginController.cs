@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 
+
 namespace BookingFlight.Controllers
 {
     
@@ -38,26 +39,42 @@ namespace BookingFlight.Controllers
             }
         }
 
-        [Route("api/UserLogin/GetUser/{UserName}/{Password}")]
-        public IHttpActionResult GetUser(string UserName, string Password)
+        //[Route("api/UserLogin/GetUser/{UserName}/{Password}")]
+        //public IHttpActionResult GetUser(string UserName, string Password)
+        //{
+        //    try
+        //    {
+        //        UserLogin userlogin = null;
+
+        //        using (var ctx = new BookingFlightEntities())
+        //        {
+        //            userlogin = (from user in ctx.UserLogins
+        //                         where user.UserName == UserName && user.Password == Password
+        //                         select user).FirstOrDefault();
+        //        }
+        //        if (userlogin != null)
+        //        {
+        //            return Json(new { id = userlogin.Id, UserType = userlogin.TypeOfUser });
+        //        }
+        //        else
+        //        {
+        //            return Json(new { });
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception(ex.Message);
+        //    }
+        //}
+
+        //[BasicAuthentication]
+        public static bool Login(string UserName, string Password)
         {
             try
             {
-                UserLogin userlogin = null;
-
                 using (var ctx = new BookingFlightEntities())
                 {
-                    userlogin = (from user in ctx.UserLogins
-                                 where user.UserName == UserName && user.Password == Password
-                                 select user).FirstOrDefault();
-                }
-                if (userlogin != null)
-                {
-                    return Json(new { id = userlogin.Id, UserType = userlogin.TypeOfUser });
-                }
-                else
-                {
-                    return Json(new { });
+                    return ctx.UserLogins.Any(user=>user.UserName.Equals(UserName,StringComparison.OrdinalIgnoreCase) && user.Password == Password)
                 }
             }
             catch (Exception ex)
